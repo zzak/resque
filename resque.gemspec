@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Resque::VERSION
   spec.authors       = ["Steve Klabnik"]
   spec.email         = ["steve@steveklabnik.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{Resque is a Redis-backed Ruby library for creating background jobs, using Resque as a queueing system.}
+  spec.summary       = %q{Resque is a Redis-backed Ruby library for creating background jobs.}
+  spec.homepage      = "https://github.com/defunkt/resque"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
