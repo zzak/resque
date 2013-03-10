@@ -15,6 +15,7 @@ class Resque
     desc "work", "Start processing jobs."
     method_option :queue, :default => :default, :aliases => ["-q"]
     def work
+      puts "QUEUE #{options[:queue]}"
       consumer = Thread.new do
         loop do
           if Resque.queue[options[:queue]].length == 0
