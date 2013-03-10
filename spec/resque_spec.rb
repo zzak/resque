@@ -20,7 +20,7 @@ require 'jobs/job_with_arguments'
       end
 
       it "can understand arguments" do
-        Resque.enqueue(JobWithArugments, 5)
+        Resque.enqueue(JobWithArguments, 5)
 
         result = Resque.process_job
 
