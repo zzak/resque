@@ -13,10 +13,11 @@ class Resque
   class CLI < Thor
 
     desc "work", "Start processing jobs."
+    method_option :queue, :default => :default, :aliases => ["-q"]
     def work
       consumer = Thread.new do
         loop do
-          if Resque.queue[:default].length == 0
+          if Resque.queue[options[:queue]].length == 0
             break
           end
 
