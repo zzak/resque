@@ -14,12 +14,6 @@ class Resque
 
     desc "work", "Start processing jobs."
     def work
-      producer = Thread.new do
-        5.times do |i|
-          Resque.enqueue(SampleJob)
-        end
-      end
-
       consumer = Thread.new do
         loop do
           if Resque.queue[:default].length == 0
@@ -31,6 +25,16 @@ class Resque
         end
       end
       consumer.join
+    end
+
+    desc "test", "Test the queue"
+    def test
+      producer = Thread.new do
+        5.times do |i|
+          Resque.enqueue(SampleJob)
+        end
+      end
+      invoke :work
     end
   end
 end
