@@ -8,6 +8,7 @@ loop do
     next
   end
 
-  result = Resque.queue[:default].pop.execute
+  klass, args = Resque.queue[:default].pop
+  result = klass.perform(*args)
   puts "PROCESSED JOB. RESULT: #{result}"
 end

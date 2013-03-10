@@ -1,32 +1,26 @@
 require "resque/version"
-require 'thread'
 
-module Resque
-  class Job
-    def initialize(klass)
-      @klass = klass
+class Resque
+  class Queue
+    def initialize
+      @queue = []
     end
-
-    def do_later(meth)
-      @meth = meth
+    def pop
+      @queue.pop
     end
-
-    def execute
-      instance = @klass.new
-      instance.send(@meth)
+    def <<(stuff)
+      @queue << stuff
+    end
+    def length
+      @queue.length
     end
   end
 
-  def queue
-    @queue ||= {:default => Queue.new}
+  def self.enqueue(klass)
+    queue[:default] << [klass, []]
   end
-  module_function :queue
-end
 
-def Resque(klass, queue=:default)
-  job = Resque::Job.new(klass)
-
-  Resque.queue[queue] << job
-
-  job
+  def self.queue
+    @queue ||= {default:  Queue.new}
+  end
 end
