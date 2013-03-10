@@ -6,19 +6,7 @@ class Resque
     @singleton = new
   end
 
-  def self.enqueue(klass, *args)
-    @singleton.enqueue(klass, *args)
-  end
-
-  def self.queue
-    @singleton.queue
-  end
-
-  def self.process_job(queue=:default)
-    @singleton.process_job(queue)
-  end
-
-  def self.queue_implementation=(impl)
-    @singleton.queue_implementation = impl
+  def self.method_missing(f, *args, &blk)
+    @singleton.send(f, *args, &blk)
   end
 end
