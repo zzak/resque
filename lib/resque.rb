@@ -13,7 +13,7 @@ class Resque
   end
 
   def queue
-    @queue ||= {default:  @queue_class.new}
+    @queue ||= Hash.new(@queue_class.new)
   end
 
   def queue_implementation=(impl)

@@ -1,5 +1,8 @@
 require 'spec_helper'
 
+require 'jobs/simple_job'
+require 'jobs/job_with_arguments'
+
 [Resque::InMemoryQueue, Resque::ThreadedQueue].each do |queue_implementation|
   describe "with #{queue_implementation}" do
     before do
@@ -7,7 +10,7 @@ require 'spec_helper'
       Resque.queue_implementation = queue_implementation
     end
 
-    describe "a job" do
+    describe "the queue" do
       it "executes later" do
         Resque.enqueue(SimpleJob)
 
