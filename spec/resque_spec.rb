@@ -1,16 +1,4 @@
-require 'resque'
-
-class SimpleJob
-  def self.perform
-    1 + 1
-  end
-end
-
-class JobWithArugments
-  def self.perform(num)
-    1 + num
-  end
-end
+require 'spec_helper'
 
 [Resque::InMemoryQueue, Resque::ThreadedQueue].each do |queue_implementation|
   describe "with #{queue_implementation}" do
