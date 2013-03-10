@@ -1,7 +1,9 @@
+require 'thread'
+
 class Resque
-  class InMemoryQueue
+  class ThreadedQueue
     def initialize
-      @queue = []
+      @queue = ::Queue.new
     end
 
     def pop

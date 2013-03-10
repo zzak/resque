@@ -1,11 +1,20 @@
 class Resque
   @singleton = new
+ 
+  # just for testing
+  def self.reset_singleton!
+    @singleton = new
+  end
 
-  def self.enqueue(klass)
-    @singleton.enqueue(klass)
+  def self.enqueue(klass, *args)
+    @singleton.enqueue(klass, *args)
   end
 
   def self.queue
     @singleton.queue
+  end
+
+  def self.queue_implementation=(impl)
+    @singleton.queue_implementation = impl
   end
 end
