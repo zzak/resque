@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'thor'
 require 'resque'
 
 class SampleJob
@@ -8,20 +9,30 @@ class SampleJob
   end
 end
 
-producer = Thread.new do
-  5.times do |i|
-    Resque.enqueue(SampleJob)
-  end
-end
+class Resque
+  class CLI < Thor
 
-consumer = Thread.new do
-  loop do
-    if Resque.queue[:default].length == 0
-      break
+    desc "work", "Start processing jobs."
+    def work
+      producer = Thread.new do
+        5.times do |i|
+          Resque.enqueue(SampleJob)
+        end
+      end
+
+      consumer = Thread.new do
+        loop do
+          if Resque.queue[:default].length == 0
+            break
+          end
+
+          result = Resque.process_job
+          puts "PROCESSED JOB. RESULT: #{result}"
+        end
+      end
+      consumer.join
     end
-
-    result = Resque.process_job
-    puts "PROCESSED JOB. RESULT: #{result}"
   end
 end
-consumer.join
+
+Resque::CLI.start
