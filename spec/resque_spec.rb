@@ -23,8 +23,7 @@ end
       it "executes later" do
         Resque.enqueue(SimpleJob)
 
-        klass, args = Resque.queue[:default].pop
-        result = klass.perform(*args)
+        result = Resque.process_job
         
         expect(result).to eql(2)
       end
@@ -32,9 +31,8 @@ end
       it "can understand arguments" do
         Resque.enqueue(JobWithArugments, 5)
 
-        klass, args = Resque.queue[:default].pop
-        result = klass.perform(*args)
-        
+        result = Resque.process_job
+
         expect(result).to eql(6)
       end
     end

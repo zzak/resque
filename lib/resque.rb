@@ -19,6 +19,11 @@ class Resque
   def queue_implementation=(impl)
     @queue_class = impl
   end
+  
+  def process_job(queue_name=:default)
+    klass, args = Resque.queue[queue_name].pop
+    klass.perform(*args)
+  end
 end
 
 require "resque/compatibility"

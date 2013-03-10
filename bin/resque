@@ -20,8 +20,7 @@ consumer = Thread.new do
       break
     end
 
-    klass, args = Resque.queue[:default].pop
-    result = klass.perform(*args)
+    result = Resque.process_job
     puts "PROCESSED JOB. RESULT: #{result}"
   end
 end

@@ -14,6 +14,10 @@ class Resque
     @singleton.queue
   end
 
+  def self.process_job(queue=:default)
+    @singleton.process_job(queue)
+  end
+
   def self.queue_implementation=(impl)
     @singleton.queue_implementation = impl
   end
