@@ -2,13 +2,27 @@
 
 require 'resque'
 
-loop do
-  if Resque.queue[:default].length == 0
-    sleep 1
-    next
+class SampleJob
+  def self.perform
+    2 + 2
   end
-
-  klass, args = Resque.queue[:default].pop
-  result = klass.perform(*args)
-  puts "PROCESSED JOB. RESULT: #{result}"
 end
+
+producer = Thread.new do
+  5.times do |i|
+    Resque.enqueue(SampleJob)
+  end
+end
+
+consumer = Thread.new do
+  loop do
+    if Resque.queue[:default].length == 0
+      break
+    end
+
+    klass, args = Resque.queue[:default].pop
+    result = klass.perform(*args)
+    puts "PROCESSED JOB. RESULT: #{result}"
+  end
+end
+consumer.join
