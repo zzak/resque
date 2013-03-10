@@ -10,7 +10,7 @@ describe "a job" do
   it "executes later" do
     Resque(SampleJob).do_later(:some_method)
 
-    result = Resque.queue[:default].process_job
+    result = Resque.queue[:default].pop.execute
     
     expect(result).to eql(2)
   end

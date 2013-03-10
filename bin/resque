@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require 'resque'
+
+loop do
+  if Resque.queue[:default].length == 0
+    sleep 1
+    next
+  end
+
+  result = Resque.queue[:default].pop.execute
+  puts "PROCESSED JOB. RESULT: #{result}"
+end

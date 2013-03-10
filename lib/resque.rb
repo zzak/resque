@@ -1,4 +1,5 @@
 require "resque/version"
+require 'thread'
 
 module Resque
   class Job
@@ -16,24 +17,6 @@ module Resque
     end
   end
 
-  class Queue
-    def initialize
-      @jobs = []
-    end
-
-    def pop
-      @jobs.pop
-    end
-
-    def push(job)
-      @jobs.push(job)
-    end
-
-    def process_job
-      pop.execute
-    end
-  end
-
   def queue
     @queue ||= {:default => Queue.new}
   end
@@ -43,7 +26,7 @@ end
 def Resque(klass, queue=:default)
   job = Resque::Job.new(klass)
 
-  Resque.queue[queue].push(job)
+  Resque.queue[queue] << job
 
   job
 end
