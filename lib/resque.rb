@@ -23,23 +23,16 @@ class Resque
   end
   
   def process_job(queue_name=:default)
-    child = fork
-    if child
-       Process.waitpid(child)
-       return nil
-    else
-      # we've forked, so we need to make a new connection
-      queue[queue_name].reconnect!
+    queue[queue_name].reconnect!
 
-      json = queue[queue_name].pop
-      return nil if json.nil?
+    json = queue[queue_name].pop
+    return nil if json.nil?
 
-      job   = JSON.parse(json)
-      klass = job["class"]
-      args  = job["args"]
+    job   = JSON.parse(json)
+    klass = job["class"]
+    args  = job["args"]
 
-      Kernel.const_get(klass).perform(*args)
-    end
+    Kernel.const_get(klass).perform(*args)
   end
 end
 

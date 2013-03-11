@@ -17,8 +17,10 @@ class Resque
     def work
       resque = Resque.new(Resque::RedisQueue)
       loop do
-        result = resque.process_job
-        if result
+        if child = fork
+          Process.waitpid(child)
+        else
+          result = resque.process_job
           puts "PROCESSED JOB. RESULT: #{result}"
         end
       end

@@ -4,7 +4,7 @@ require 'jobs/job_with_arguments'
 describe do
   it "mock end-to-ends" do
     json = '{"class":"JobWithArguments","args":[24]}'
-    redis = double
+    redis = double(:client => double(:reconnect => nil))
     redis.stub(:blpop).with("default", :timeout => 0).and_return(["default", json])
     redis.should_receive(:rpush).with("default", json)
     Redis.stub(:new => redis)

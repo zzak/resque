@@ -13,5 +13,8 @@ class Resque
     def <<(stuff)
       @queue << stuff
     end
+
+    def reconnect!
+    end
   end
 end
