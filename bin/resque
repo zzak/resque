@@ -15,29 +15,21 @@ class Resque
     desc "work", "Start processing jobs."
     method_option :queue, :default => :default, :aliases => ["-q"]
     def work
-      consumer = Thread.new do
-        resque = Resque.new(Resque::RedisQueue)
-        loop do
-          result = resque.process_job
-          if result
-            puts "PROCESSED JOB. RESULT: #{result}"
-          else
-            sleep 5
-          end
+      resque = Resque.new(Resque::RedisQueue)
+      loop do
+        result = resque.process_job
+        if result
+          puts "PROCESSED JOB. RESULT: #{result}"
         end
       end
-      consumer.join
     end
 
     desc "test", "Test the queue"
     def test
-      producer = Thread.new do
-        resque = Resque.new(Resque::RedisQueue)
-        5.times do |i|
-          resque.enqueue(SampleJob)
-        end
+      resque = Resque.new(Resque::RedisQueue)
+      5.times do
+        resque.enqueue(SampleJob)
       end
-      invoke :work
     end
   end
 end

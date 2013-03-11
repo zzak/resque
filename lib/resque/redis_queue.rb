@@ -13,5 +13,9 @@ class Resque
     def <<(stuff)
       @queue.rpush("default", stuff)
     end
+
+    def reconnect!
+      @queue.client.reconnect
+    end
   end
 end
