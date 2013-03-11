@@ -5,7 +5,7 @@ describe do
   it "mock end-to-ends" do
     json = '{"class":"JobWithArguments","args":[24]}'
     redis = double
-    redis.stub(:blpop).with("default").and_return(["default", json])
+    redis.stub(:blpop).with("default", :timeout => 0).and_return(["default", json])
     redis.should_receive(:rpush).with("default", json)
     Redis.stub(:new => redis)
 

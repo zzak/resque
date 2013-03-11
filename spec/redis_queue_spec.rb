@@ -8,7 +8,7 @@ end
 describe Resque::RedisQueue do
   it "can recall things from Redis" do
     redis = double
-    redis.stub(:blpop).with("default").and_return(['default','{"class":"Foo","args":["bar"]}'])
+    redis.stub(:blpop).with("default", :timeout => 0).and_return(['default','{"class":"Foo","args":["bar"]}'])
     Redis.stub(:new => redis)
 
     rqueue = Resque::RedisQueue.new
