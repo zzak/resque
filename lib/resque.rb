@@ -2,6 +2,7 @@ require "resque/version"
 
 require "resque/in_memory_queue"
 require "resque/threaded_queue"
+require "resque/redis_queue"
 require "json"
 
 class Resque
@@ -22,7 +23,7 @@ class Resque
   end
   
   def process_job(queue_name=:default)
-    job   = JSON.parse(Resque.queue[queue_name].pop)
+    job   = JSON.parse(queue[queue_name].pop)
     klass = job["class"]
     args  = job["args"]
 
