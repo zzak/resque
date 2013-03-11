@@ -11,9 +11,5 @@ class Resque
     def <<(stuff)
       @queue << stuff
     end
-
-    def length
-      @queue.length
-    end
   end
 end

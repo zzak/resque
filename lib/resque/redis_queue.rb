@@ -7,15 +7,11 @@ class Resque
     end
 
     def pop
-      @queue.blpop("default")[1]
+      @queue.blpop("default", :timeout => 0)[1]
     end
 
     def <<(stuff)
       @queue.rpush("default", stuff)
-    end
-
-    def length
-      @queue.length
     end
   end
 end

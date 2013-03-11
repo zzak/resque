@@ -23,7 +23,10 @@ class Resque
   end
   
   def process_job(queue_name=:default)
-    job   = JSON.parse(queue[queue_name].pop)
+    json = queue[queue_name].pop
+    return nil if json.nil?
+
+    job   = JSON.parse(json)
     klass = job["class"]
     args  = job["args"]
 
