@@ -167,32 +167,38 @@ module Resque
         break if shutdown?
 
         if not paused? and job = reserve
-          log "got: #{job.inspect}"
-          job.worker = self
-          working_on job
+          begin
+            log "got: #{job.inspect}"
+            job.worker = self
+            working_on job
 
-          procline "Processing #{job.queue} since #{Time.now.to_i} [#{job.payload_class_name}]"
-          if @child = fork(job)
-            srand # Reseeding
-            procline "Forked #{@child} at #{Time.now.to_i}"
-            begin
-              Process.waitpid(@child)
-            rescue SystemCallError
-              nil
+            procline "Processing #{job.queue} since #{Time.now.to_i} [#{job.payload_class_name}]"
+            if @child = fork(job)
+              srand # Reseeding
+              procline "Forked #{@child} at #{Time.now.to_i}"
+              begin
+                Process.waitpid(@child)
+              rescue SystemCallError
+                nil
+              end
+              job.fail(DirtyExit.new($?.to_s)) if $?.signaled?
+            else
+              unregister_signal_handlers if will_fork? && term_child
+
+              reconnect
+              perform(job, &block)
+
+              if will_fork?
+                run_at_exit_hooks ? exit : exit!
+              end
             end
-            job.fail(DirtyExit.new($?.to_s)) if $?.signaled?
-          else
-            unregister_signal_handlers if will_fork? && term_child
-
+            done_working
+            @child = nil
+          rescue Redis::TimeoutError
+            log "Got a timeout, reconnecting and retrying"
             reconnect
-            perform(job, &block)
-
-            if will_fork?
-              run_at_exit_hooks ? exit : exit!
-            end
+            retry 
           end
-          done_working
-          @child = nil
         else
           break if interval.zero?
           log! "Sleeping for #{interval} seconds"
